@@ -36,7 +36,7 @@ public:
         koniec=NULL;
     }
 
-    // dodawanie nowego elementu na koncu listy
+    // dodawanie elementu na koniec listy
     void dodaj(int nr)
     {
         kolejka* nowy=new kolejka(nr);
@@ -132,7 +132,6 @@ public:
     // dodawanie elementu do drzewa
     Lisc* dodaj(Lisc* korzen, int wartosc)
     {
-        // gdy nie ma jeszcze wezla
         if(korzen==NULL)
         {
             Lisc* nowy=new Lisc;
@@ -144,13 +143,10 @@ public:
             return nowy;
         }
 
-        // mniejsza wartosc trafia do lewej galezi
         if(wartosc<korzen->wartosc)
         {
             korzen->lewy=dodaj(korzen->lewy,wartosc);
         }
-
-        // wieksza lub rowna wartosc trafia w prawo
         else
         {
             korzen->prawy=dodaj(korzen->prawy,wartosc);
@@ -164,7 +160,7 @@ public:
         korzen=dodaj(korzen,wartosc);
     }
 
-    // przejscie po drzewie i zapis wartosci do tablicy
+    // przejscie po drzewie i zapisanie wartosci
     void przejdz(Lisc* korzen, vector<int>& tab)
     {
         if(korzen==NULL)
@@ -204,22 +200,20 @@ public:
         delete korzen;
     }
 
-    // zwalnianie pamieci po zakonczeniu pracy
+    // zwalnianie pamieci
     ~drzewo()
     {
         usun(korzen);
     }
 };
 
-
 int main()
 {
     const int ile=100000;
 
-    // tablica przechowujaca wylosowane dane
+    // tablica z wylosowanymi liczbami
     int liczby[ile];
 
-    // uruchomienie generatora liczb losowych
     srand(time(NULL));
 
     for(int i=0;i<ile;i++)
@@ -227,17 +221,17 @@ int main()
         liczby[i]=rand()%1000000;
     }
 
-
-    // zmienne wykorzystywane do pomiaru czasu
+    // zmienne do mierzenia czasu
     chrono::high_resolution_clock::time_point start;
     chrono::high_resolution_clock::time_point stop;
 
-
-    // tablica zwykla
+    // =========================================================
+    // TABLICA
+    // =========================================================
 
     int tablica[200000];
 
-    // zapisanie pierwszych 100000 liczb
+    // dodanie pierwszych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -251,7 +245,6 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
     // sortowanie tablicy
     start=chrono::high_resolution_clock::now();
 
@@ -263,8 +256,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // zapisanie nastepnych 100000 elementow
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -278,25 +270,36 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // vector
+    // =========================================================
+    // VECTOR
+    // =========================================================
 
     vector<int> v;
 
-    // dodanie pierwszej porcji elementow
+    // pomiar pierwszego elementu
     start=chrono::high_resolution_clock::now();
 
-    for(int i=0;i<ile;i++)
+    v.push_back(liczby[0]);
+
+    stop=chrono::high_resolution_clock::now();
+
+    auto czas_vector_pierwszy=
+        chrono::duration_cast<chrono::microseconds>
+        (stop-start);
+
+    // dodanie pozostalych 99999 elementow
+    start=chrono::high_resolution_clock::now();
+
+    for(int i=1;i<ile;i++)
     {
         v.push_back(liczby[i]);
     }
 
     stop=chrono::high_resolution_clock::now();
 
-    auto czas_vector_dodawanie=
+    auto czas_vector_pozostale=
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
-
 
     // sortowanie vectora
     start=chrono::high_resolution_clock::now();
@@ -309,8 +312,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // dodanie kolejnej partii liczb
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -324,26 +326,38 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-    // kolejka FIFO
+    // =========================================================
+    // KOLEJKA FIFO
+    // =========================================================
 
     queue<int> fifo;
 
-    // dodawanie pierwszych elementow do kolejki
+    // pomiar pierwszego elementu
     start=chrono::high_resolution_clock::now();
 
-    for(int i=0;i<ile;i++)
+    fifo.push(liczby[0]);
+
+    stop=chrono::high_resolution_clock::now();
+
+    auto czas_fifo_pierwszy=
+        chrono::duration_cast<chrono::microseconds>
+        (stop-start);
+
+    // dodanie pozostalych 99999 elementow
+    start=chrono::high_resolution_clock::now();
+
+    for(int i=1;i<ile;i++)
     {
         fifo.push(liczby[i]);
     }
 
     stop=chrono::high_resolution_clock::now();
 
-    auto czas_fifo_dodawanie=
+    auto czas_fifo_pozostale=
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // sortowanie danych znajdujacych sie w kolejce
+    // sortowanie kolejki
     start=chrono::high_resolution_clock::now();
 
     vector<int> fifo_sort;
@@ -368,8 +382,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // dopisanie kolejnych 100000 liczb
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -383,26 +396,38 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-    // stos LIFO
+    // =========================================================
+    // STOS LIFO
+    // =========================================================
 
     stack<int> lifo;
 
-    // umieszczenie pierwszej partii liczb na stosie
+    // pomiar pierwszego elementu
     start=chrono::high_resolution_clock::now();
 
-    for(int i=0;i<ile;i++)
+    lifo.push(liczby[0]);
+
+    stop=chrono::high_resolution_clock::now();
+
+    auto czas_lifo_pierwszy=
+        chrono::duration_cast<chrono::microseconds>
+        (stop-start);
+
+    // dodanie pozostalych 99999 elementow
+    start=chrono::high_resolution_clock::now();
+
+    for(int i=1;i<ile;i++)
     {
         lifo.push(liczby[i]);
     }
 
     stop=chrono::high_resolution_clock::now();
 
-    auto czas_lifo_dodawanie=
+    auto czas_lifo_pozostale=
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // sortowanie elementow stosu
+    // sortowanie stosu
     start=chrono::high_resolution_clock::now();
 
     vector<int> lifo_sort;
@@ -427,8 +452,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // dodanie drugiej porcji danych
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -442,11 +466,13 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-    // wlasna kolejka oparta na liscie
+    // =========================================================
+    // WLASNA KOLEJKA LINKED LIST
+    // =========================================================
 
     uczen u;
 
-    // dodawanie pierwszych 100000 elementow
+    // dodanie pierwszych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -460,8 +486,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // sortowanie elementow kolejki
+    // sortowanie kolejki
     start=chrono::high_resolution_clock::now();
 
     u.sort_bubble();
@@ -472,8 +497,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // dodawanie kolejnych elementow
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -487,12 +511,13 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // drzewo binarne
+    // =========================================================
+    // DRZEWO BINARNE
+    // =========================================================
 
     drzewo d;
 
-    // wstawianie pierwszych 100000 wartosci
+    // dodanie pierwszych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -506,8 +531,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // pomiar czasu sortowania drzewa
+    // sortowanie drzewa
     start=chrono::high_resolution_clock::now();
 
     d.sortuj();
@@ -518,8 +542,7 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
-
-    // dodanie kolejnej grupy elementow
+    // dodanie kolejnych 100000 elementow
     start=chrono::high_resolution_clock::now();
 
     for(int i=0;i<ile;i++)
@@ -533,15 +556,16 @@ int main()
         chrono::duration_cast<chrono::microseconds>
         (stop-start);
 
+    // =========================================================
+    // WYNIKI
+    // =========================================================
 
-    // pokazanie zmierzonych czasow
-
-    cout<<"WYNIKI POMIAROW"<<endl;
+    cout<<"WYNIKI POMIAROW CZASU"<<endl;
 
     cout<<endl;
     cout<<"Tablica zwykla:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
+    cout<<"Dodawanie 100000: "
         <<czas_tablica_dodawanie.count()
         <<" us"<<endl;
 
@@ -549,63 +573,83 @@ int main()
         <<czas_tablica_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Dodawanie kolejnych 100000: "
         <<czas_tablica_kolejne.count()
         <<" us"<<endl;
 
-
     cout<<endl;
-    cout<<"Vector:"<<endl;
+    cout<<"VECTOR:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
-        <<czas_vector_dodawanie.count()
+    cout<<"Pierwszy element: "
+        <<czas_vector_pierwszy.count()
+        <<" us"<<endl;
+
+    cout<<"Pozostale 99999 elementow: "
+        <<czas_vector_pozostale.count()
+        <<" us"<<endl;
+
+    cout<<"Pierwsze 100000 razem: "
+        <<czas_vector_pierwszy.count()+czas_vector_pozostale.count()
         <<" us"<<endl;
 
     cout<<"Sortowanie: "
         <<czas_vector_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Kolejne 100000: "
         <<czas_vector_kolejne.count()
         <<" us"<<endl;
 
-
     cout<<endl;
-    cout<<"Kolejka FIFO:"<<endl;
+    cout<<"KOLEJKA FIFO:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
-        <<czas_fifo_dodawanie.count()
+    cout<<"Pierwszy element: "
+        <<czas_fifo_pierwszy.count()
+        <<" us"<<endl;
+
+    cout<<"Pozostale 99999 elementow: "
+        <<czas_fifo_pozostale.count()
+        <<" us"<<endl;
+
+    cout<<"Pierwsze 100000 razem: "
+        <<czas_fifo_pierwszy.count()+czas_fifo_pozostale.count()
         <<" us"<<endl;
 
     cout<<"Sortowanie: "
         <<czas_fifo_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Kolejne 100000: "
         <<czas_fifo_kolejne.count()
         <<" us"<<endl;
 
-
     cout<<endl;
-    cout<<"Stos LIFO:"<<endl;
+    cout<<"STOS LIFO:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
-        <<czas_lifo_dodawanie.count()
+    cout<<"Pierwszy element: "
+        <<czas_lifo_pierwszy.count()
+        <<" us"<<endl;
+
+    cout<<"Pozostale 99999 elementow: "
+        <<czas_lifo_pozostale.count()
+        <<" us"<<endl;
+
+    cout<<"Pierwsze 100000 razem: "
+        <<czas_lifo_pierwszy.count()+czas_lifo_pozostale.count()
         <<" us"<<endl;
 
     cout<<"Sortowanie: "
         <<czas_lifo_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Kolejne 100000: "
         <<czas_lifo_kolejne.count()
         <<" us"<<endl;
 
-
     cout<<endl;
-    cout<<"Kolejka - lista linked list:"<<endl;
+    cout<<"KOLEJKA LINKED LIST:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
+    cout<<"Dodawanie 100000: "
         <<czas_kolejka_dodawanie.count()
         <<" us"<<endl;
 
@@ -613,15 +657,14 @@ int main()
         <<czas_kolejka_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Dodawanie kolejnych 100000: "
         <<czas_kolejka_kolejne.count()
         <<" us"<<endl;
 
-
     cout<<endl;
-    cout<<"Drzewo binarne:"<<endl;
+    cout<<"DRZEWO BINARNE:"<<endl;
 
-    cout<<"Dodanie 100000 elementow: "
+    cout<<"Dodawanie 100000: "
         <<czas_drzewo_dodawanie.count()
         <<" us"<<endl;
 
@@ -629,10 +672,9 @@ int main()
         <<czas_drzewo_sortowanie.count()
         <<" us"<<endl;
 
-    cout<<"Dodanie kolejnych 100000 elementow: "
+    cout<<"Dodawanie kolejnych 100000: "
         <<czas_drzewo_kolejne.count()
         <<" us"<<endl;
-
 
     return 0;
 }
